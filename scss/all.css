@@ -188,8 +188,9 @@ body {
 .header {
   padding: 10px 0 30px;
 }
-.hd_logo {
+.header .hd_logo {
   width: 150px;
+  cursor: pointer;
 }
 
 .planSel {

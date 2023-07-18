@@ -80,8 +80,9 @@ $mainColor: #e63267;
 
 .header {
     padding: 10px 0 30px;
-    @at-root .hd_logo {
+    .hd_logo {
         width: 150px;
+        cursor: pointer;
     }
 }
 
