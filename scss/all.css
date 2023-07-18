@@ -110,6 +110,14 @@ img {
   vertical-align: middle;
 }
 
+@font-face {
+  font-family: "NotoSansTC";
+  src: url(../font/NotoSansTC.woff) format("woff");
+}
+* {
+  font-family: "NotoSansTC";
+}
+
 body {
   overflow-y: scroll;
   background: url(../images/bg_pc.webp) no-repeat center/cover;
