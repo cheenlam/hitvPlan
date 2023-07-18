@@ -427,7 +427,7 @@ body {
   align-items: center;
 }
 .planList li + li {
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .connForm {
