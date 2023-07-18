@@ -1,0 +1,589 @@
+img {
+    width: 100%;
+    vertical-align: middle;
+}
+
+body {
+    overflow-y: scroll;
+    background: url(/images/bg_pc.webp) no-repeat center / cover;
+    background-attachment: fixed;
+    @include rwd(700){
+        background-image: url(/images/bg_mob.webp);
+    }
+}
+
+$mainColor: #e63267;
+
+// 打勾
+.gou {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border-radius: 50%;
+    position: relative;
+    &::before {
+        content: "";
+        width: 5px;
+        height: 9px;
+        margin: auto;
+        transform: rotate(40deg);
+        position: absolute;
+        @include pos(tbrl, 0);
+    }
+}
+
+.btn {
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 35px;
+    background-color: $mainColor;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 2px 2px 4px #999;
+    &.back {
+        background-color: #ccc;
+        box-shadow: unset;
+    }
+}
+
+.received,
+.ckData,
+.stepList,
+.connForm,
+.planList{
+    opacity: 0;
+    transform: translateY(20px);
+    animation: show 0.8s forwards;
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.indexBox {
+    width: calc(100vw - 20px);
+    max-width: 800px;
+    padding: 0 10px 100px;
+    margin: auto;
+    font-size: 14px;
+}
+
+.header {
+    padding: 10px 0 30px;
+    @at-root .hd_logo {
+        width: 150px;
+    }
+}
+
+// 方案選擇
+.planSel {
+    margin-bottom: 40px;
+    h5 {
+        padding-bottom: 15px;
+        font-size: 26px;
+        font-weight: bold;
+        text-align: center;
+    }
+    ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    li {
+        height: 30px;
+        padding: 0px 25px;
+        line-height: 30px;
+        border-radius: 30px;
+        cursor: pointer;
+        &.on {
+            background-color: $mainColor;
+            color: #fff;
+            box-shadow: 2px 2px 4px #999;
+        }
+    }
+}
+
+// 步驟
+.stepCount {
+    margin-bottom: 30px;
+    font-size: 13px;
+    ul {
+        display: flex;
+        justify-content: center;
+        @include rwd(550){
+            justify-content: flex-start;
+        }
+    }
+    li {
+        width: 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        
+        &.on {
+            .numBall {
+                background-color: $mainColor;
+                color: #fff;
+                &::after,
+                &::before {
+                    background-color: $mainColor;
+                }
+            }
+            p {
+                color: $mainColor;
+            }
+        }
+
+        &:first-child {
+            .numBall::before {
+                display: none;
+            }
+        }
+        &:last-child {
+            .numBall::after {
+                display: none;
+            }
+        }
+
+        @include rwd(550){
+            display: none;
+            &.mobOn{
+                display: flex;
+            }
+
+            flex-direction: row;
+            align-items: flex-end;
+            .numBall{
+                width: 30px;
+                height: 30px;
+                margin-right: 10px;
+                line-height: 30px;
+                font-size: 15px;
+                &::before,
+                &::after{
+                    display: none;
+                }
+            }
+            
+            .stepTxt{
+                flex-shrink: 0;
+                span{
+                    display: block;
+                }
+                p{
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #000;
+                }
+            }
+        }
+        
+    }
+
+    .numBall {
+        width: 25px;
+        height: 25px;
+        margin-bottom: 4px;
+        line-height: 25px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: #e1e1e6;
+        color: #999;
+        position: relative;
+        box-shadow: 1px 1px 3px #999;
+        flex-shrink: 0;
+        &::before,
+        &::after {
+            content: "";
+            width: 30px;
+            height: 3px;
+            background-color: #e1e1e6;
+            position: absolute;
+            top: 10px;
+            z-index: -1;
+        }
+        &::before {
+            left: -27px;
+        }
+        &::after {
+            right: -28px;
+        }
+    }
+
+    .stepTxt{
+        span{
+            color: #999;
+            font-size: 12px;
+            display: none;
+        }
+        p {
+            font-weight: bold;
+            color: #999;
+        }
+    }
+
+    .mobLine{
+        width: 100%;
+        height: 4px;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        background-color: #eee;
+        box-shadow: 1px 1px 3px #c9c9c9;
+        position: relative;
+        overflow: hidden;
+        display: none;
+        @include rwd(550){
+            display: block;
+        }
+        &.type_0{
+            @for $i from 0 through 5 {
+                span.width_#{$i}{
+                   width: calc(100% / 5 * ($i + 2));
+                }
+            }
+        }
+
+        &.type_1{
+            @for $i from 2 through 3 {
+                span.width_#{$i}{
+                    width: calc(100% / 3 * $i);
+                }
+            }
+        }
+        span{
+            height: 4px;
+            margin: auto;
+            background-color: $mainColor;
+            display: inline-block;
+            position: absolute;
+            @include pos(tbl,0);
+        }
+
+    }
+}
+
+// 包站方案 & API方案
+.planList {
+    max-width: 650px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    @include rwd(650){
+        flex-direction: column;
+    }
+    .item {
+        width: 50%;
+        padding: 30px 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 8px #999;
+        color: #999;
+        background-color: #fff;
+        @include rwd(650){
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+        }
+    }
+
+    .gou {
+        background-color: $mainColor;
+        &::before {
+            content: "";
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+        }
+    }
+
+    h5 {
+        font-size: 20px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    ul {
+        margin: 15px 0 40px;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+    }
+
+    li + li {
+        margin-top: 10px;
+    }
+}
+
+// 聯絡表單
+.connForm {
+    max-width: 500px;
+    margin: auto;
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 0 0 8px #999;
+    background-color: #fff;
+    h5 {
+        padding-bottom: 20px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .fillin {
+        margin-bottom: 50px;
+        
+        label{
+            padding-bottom: 18px;
+            display: block;
+            position: relative;
+        }
+
+        label + label {
+            margin-top: 5px;
+        }
+
+        .item{
+            padding: 0 5px;
+            border-bottom: 2px solid $mainColor;
+        }
+
+        p {
+            margin-bottom: 3px;
+        }
+        select,
+        input {
+            width: 100%;
+            @include fullNone;
+            height: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            color: $mainColor;
+        }
+        select {
+            cursor: pointer;
+        }
+
+        .errorTxt {
+            padding-top: 2px;
+            font-size: 12px;
+            color: #f00;
+            text-align: right;
+            position: absolute;
+            @include pos(br,0)
+        }
+    }
+
+    .btnbox {
+        display: flex;
+        gap: 10px;
+        .btn {
+            &:nth-child(1) {
+                flex: 1.3;
+            }
+            &:nth-child(2) {
+                flex: 2;
+            }
+        }
+    }
+    .confirm{
+        width: calc(100% - 40px);
+        max-width: 300px;
+        margin: auto;
+    }
+}
+
+// 選擇服務器 & 選擇CDN
+.stepList {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 8px #999;
+    background-color: #fff;
+    .item {
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+        &.on {
+            background-color: $mainColor;
+            color: #fff;
+
+            .gou {
+                display: block;
+            }
+            span {
+                color: #e9edd4;
+            }
+        }
+    }
+
+    .gou {
+        background-color: #fff;
+        position: absolute;
+        @include pos(tr, 20px, 0);
+        display: none;
+        &::before {
+            content: "";
+            border-right: 2px solid $mainColor;
+            border-bottom: 2px solid $mainColor;
+        }
+    }
+
+    .item + .item {
+        margin-top: 10px;
+    }
+
+    li{
+        display: flex;
+    }
+
+    li + li {
+        margin-top: 5px;
+    }
+
+    h5 {
+        padding-bottom: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    span {
+        width: 45px;
+        color: #999;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+
+    .btnbox {
+        margin-top: 50px;
+        display: flex;
+        gap: 10px;
+        .btn {
+            &:nth-child(1) {
+                flex: 1.3;
+            }
+            &:nth-child(2) {
+                flex: 2;
+            }
+        }
+    }
+}
+
+// 確認資料
+.ckData {
+    max-width: 500px;
+    margin: auto;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 8px #999;
+    color: #999;
+    font-size: 13px;
+    background-color: #fff;
+    .item{
+        padding: 15px;
+        &.expand{
+            background-color: #EEEFF1;
+        }
+    }
+    .item + .item{
+        margin-top: 5px;
+    }
+
+    .expand{
+        h5{
+            color: #55545B; 
+        }
+    }
+
+    h5{
+        padding-bottom: 8px;
+        font-size: 18px;
+        font-weight: bold; 
+        color: #000;
+    }
+
+    ul{
+        padding-left: 2px;
+    }
+
+    li{
+        &::before{
+            content: '-';
+            padding-right: 3px;
+        }
+    }
+
+    li+li{
+        margin-top: 3px;
+    }
+
+
+    .btnbox {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        .btn {
+            &:nth-child(1) {
+                flex: 1.3;
+            }
+            &:nth-child(2) {
+                flex: 2;
+            }
+        }
+    }
+}
+
+// 已收到訂單
+.received {
+    max-width: 400px;
+    margin: 100px auto 0;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 8px #999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    .gou{
+        width: 75px;
+        height: 75px;
+        margin-bottom: 15px;
+        background-color: $mainColor;
+        &::before {
+            width: 20px;
+            height: 32px;
+            border-right: 5px solid #fff;
+            border-bottom: 5px solid #fff;
+        }
+    }
+
+    p{
+        color: #777;
+    }
+
+    span{
+        padding: 0 3px;
+        font-weight: bold;
+        font-size: 15px;
+        color: $mainColor;
+    }
+
+    .btn{
+        width: calc(100% - 40px);
+        max-width: 300px;
+        margin: 40px auto 0;
+    }
+}

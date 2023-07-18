@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/vue3.js"></script>
+    <script src="js/axios.js"></script>
+    <link rel="stylesheet" href="scss/all.css">
+</head>
+
+<body>
+    <div class="indexBox" id="app">
+        <div class="header">
+            <div class="hd_logo" @click="reset_sw(),reset_from(),goTop()">
+                <img src="images/logo.png" alt="logo">
+            </div>
+        </div>
+
+        <!-- 方案選擇 -->
+        <div class="planSel" v-if="sw.plan">
+            <h5>选择合适的套餐方案</h5>
+            <ul>
+                <li @click="sel.plan = 0,reset_from(),goTop()" :class="{'on': sel.plan == 0}">包站</li>
+                <li @click="sel.plan = 1,reset_from(),goTop()" :class="{'on': sel.plan == 1}">API服务</li>
+                <li @click="sel.plan = 2,goTop()" :class="{'on': sel.plan == 2}">客制化</li>
+            </ul>
+        </div>
+
+        <!-- 步驟 -->
+        <div class="stepCount" v-if="sw.step">
+            <div class="mobLine" :class="'type_' + sw.type">
+                <span :class="'width_' + sw.num"></span>
+            </div>
+            <ul>
+                <li :class="{'on': sw.num >= 0}">
+                    <div class="numBall">1</div>
+                    <div class="stepTxt">
+                        <span>第1步</span>
+                        <p>选择方案</p>
+                    </div>
+                </li>
+                <li v-if="sw.type == 0" :class="{'on': sw.num >= 0,'mobOn' : sw.num == 0}">
+                    <div class="numBall">2</div>
+                    <div class="stepTxt">
+                        <span>第2步</span>
+                        <p>选择服务器</p>
+                    </div>
+                    
+                </li>
+                <li v-if="sw.type == 0" :class="{'on': sw.num >= 1,'mobOn' : sw.num == 1}">
+                    <div class="numBall">3</div>
+                    <div class="stepTxt">
+                        <span>第3步</span>
+                        <p>选择CDN</p> 
+                    </div>
+                </li>
+                <li :class="{'on': sw.num >= 2,'mobOn' : sw.num == 2}">
+                    <div class="numBall">{{ sw.type == 0 ? 4 : 2}}</div>
+                    <div class="stepTxt">
+                        <span>第{{ sw.type == 0 ? 4 : 2}}步</span>
+                        <p>填写资料</p>  
+                    </div>
+                   
+                </li>
+                <li :class="{'on': sw.num >= 3,'mobOn' : sw.num == 3}">
+                    <div class="numBall">{{ sw.type == 0 ? 5 : 3}}</div>
+                    <div class="stepTxt">
+                        <span>第{{ sw.type == 0 ? 5 : 3}}步</span>
+                        <p>确认资料</p>
+                    </div>    
+                </li>
+            </ul>
+        </div>
+
+        <!-- 包站方案 -->
+        <div class="planList" v-if="sw.plan && sel.plan == 0">
+            <div class="item" v-for="(item,index) in planData[0]" :key="index">
+                <h5>{{item.title}}</h5>
+                <ul>
+                    <li v-for="(list,idx) in item.list" :key="idx">
+                        <div class="gou"></div>  
+                        <p>{{list}}</p>
+                    </li>
+                </ul>
+
+                <div class="btn" @click="toStep(0,0,index),goTop()">选择方案</div>
+            </div>
+        </div>
+
+        <!-- API方案 -->
+        <div class="planList" v-if="sw.plan && sel.plan == 1">
+            <div class="item" v-for="(item,index) in planData[1]" :key="index">
+                <h5>{{item.title}}</h5>
+                <ul>
+                    <li v-for="(list,idx) in item.list" :key="idx">
+                        <div class="gou"></div>  
+                        <p>{{list}}</p>
+                    </li>
+                </ul>
+
+                <div class="btn" @click="toStep(2,1,index),goTop()">选择方案</div>
+            </div>
+        </div>
+
+        <!-- 聯絡表單 -->
+        <div class="connForm" v-if="sw.plan && sel.plan == 2 || sw.step && sw.num == 2">
+            <h5>联络表单</h5>
+            <div class="fillin">
+                <label>
+                    <div class="item">
+                        <p>名称</p>
+                        <input type="text" placeholder="请输入你的名称" 
+                        v-model="formVal.name" 
+                        @input="error.nameSw = false">
+                    </div>
+                    <div class="errorTxt" v-if="error.nameSw">栏位不得为空</div>
+                </label>
+               
+
+                <label>
+                    <div class="item">
+                        <p>联络方式</p>
+                        <select v-model.number="formVal.sel" @change="formVal.account = ''">
+                            <option value="0">QQ</option>
+                            <option value="1">WeChat</option>
+                            <option value="2">Telegram</option>
+                        </select>
+                    </div>   
+                </label>
+                
+                <label>
+                    <div class="item">
+                        <p>联络帐号</p>
+                        <input type="text" placeholder="请输入你的联络帐号" 
+                        v-model="formVal.account"
+                        @input="error.accSw = false">
+                    </div>
+                    <div class="errorTxt" v-if="error.accSw">{{error.accTxt}}</div>
+                </label>
+                
+            </div>
+
+            <div class="btnbox" v-if="sw.step">
+                <div class="btn back" @click="connBack(),reset_from(),goTop()">上一步</div>
+                <div class="btn" @click="toCkData()">下一步</div>
+            </div>
+
+            <div class="btn confirm" @click="toForm(),postApi(),goTop()" v-if="!sw.step">确认送出</div>
+        </div>
+
+        <!-- 選擇服務器 -->
+        <div class="stepList" v-if="sw.step && sw.num==0">
+            <div class="item" v-for="(item,index) in serverData" :key="index" :class="{'on': sel.server == index}"
+                @click="sel.server = index">
+                <div class="gou"></div>
+                <h5>{{item.title}}</h5>
+                <ul>
+                    <li v-for="(list,idx) in item.list" :key="idx">
+                        <span>{{list.sort}}</span>
+                        <p>{{list.val}}</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="btnbox">
+                <div class="btn back" @click="sw.plan=true,sw.step=false,sel.server=0,goTop()">上一步</div>
+                <div class="btn" @click="sw.plan=false,sw.step=true,sw.num=1,goTop()">下一步</div>
+            </div>
+        </div>
+
+        <!-- 選擇CDN -->
+        <div class="stepList" v-if="sw.step && sw.num==1">
+            <div class="item" v-for="(item,index) in cdnData" :key="index" :class="{'on': sel.cdn == index}"
+                @click="sel.cdn = index">
+                <div class="gou"></div>
+                <h5>{{item.title}}</h5>
+                <ul>
+                    <li v-for="(list,idx) in item.list" :key="idx">{{list}}</li>
+                </ul>
+            </div>
+
+            <div class="btnbox">
+                <div class="btn back" @click="sw.num=0,sel.cdn=0,goTop()">上一步</div>
+                <div class="btn" @click="sw.num=2,goTop()">下一步</div>
+            </div>
+        </div>
+
+        <!-- 確認資料 -->
+        <div class="ckData" v-if="sw.step && sw.num == 3">
+            <div class="item">
+                <h5>{{planData[sel.plan][sel.package].title}}</h5>
+                <ul>
+                    <li v-for="(item,index) in planData[sel.plan][sel.package].list">{{item}}</li>
+                </ul>
+            </div>
+
+            <div class="item expand" v-if="sw.type == 0">
+                <h5>{{serverData[sel.server].title}}</h5>
+                <ul v-if="sw.type == 0">
+                    <li v-for="(item,index) in serverData[sel.server].list">{{item.val}}</li>
+                </ul>
+            </div>
+
+            <div class="item expand" v-if="sw.type == 0">
+                <h5>{{cdnData[sel.cdn].title}}</h5>
+                <ul v-if="sw.type == 0">
+                    <li v-for="(item,index) in cdnData[sel.cdn].list">{{item}}</li>
+                </ul>
+            </div>
+
+            <div class="item">
+                <h5>联络资讯</h5>
+                <ul>
+                    <li>客户名称：{{formVal.name}}</li>
+                    <li>联络方式：{{accArr[formVal.sel]}}</li>
+                    <li>联络帐号：{{formVal.account}}</li>
+                </ul>
+            </div>
+
+            <div class="btnbox" v-if="sw.step">
+                <div class="btn back" @click="sw.num = 2,goTop()">上一步</div>
+                <div class="btn" @click="sw.plan = false,sw.step = false,sw.num = 4,postApi(),goTop()">确认送出</div>
+            </div>
+        </div>
+
+        <!-- 已收到訂單 -->
+        <div class="received" v-if="sw.num == 4">
+            <div class="gou"></div>
+            <p>亲爱的<span>{{formVal.name}}</span>我们已收到您的订单，我们会尽快与您联系！</p>
+
+            <div class="btn" @click="reset_sw(),reset_from(),goTop()">返回首页</div>
+        </div>
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    sw: {
+                        plan: true,
+                        step: false,
+                        num: 0,
+                        type: 0,
+                    },
+                    
+                    sel: {
+                        plan: 0,
+                        package: 0,
+                        server: 0,
+                        cdn: 0
+                    },
+                    
+                    error:{
+                        nameSw: false,
+                        accSw : false,
+                        accTxt : ''
+                    },
+                    
+                    formVal : {
+                        name : '',
+                        sel: 0,
+                        account:'' 
+                    },
+
+                    accArr : ['QQ','WeChat','Telegram'],
+                    planData: [],
+                    serverData : [],
+                    cdnData: []
+                }
+            },
+            methods: {
+                // 還原開關與步驟
+                reset_sw() {
+                    this.sw.plan = true;
+                    this.sw.step = false,
+                    this.sw.num = 0,
+                    this.sw.type = 0,
+                    this.sel.plan = 0,
+                    this.sel.package = 0,
+                    this.sel.server = 0,
+                    this.sel.cdn = 0;
+                },
+
+                // 清空表單 & 還原error
+                reset_from(){
+                    this.formVal.name = '';
+                    this.formVal.sel = 0;
+                    this.formVal.account = '';
+
+                    this.error.nameSw = false;
+                    this.error.accSw = false;
+                    this.error.accTxt = '';
+                },
+
+                toStep(num, type, package) {
+                    this.sw.plan = false;
+                    this.sw.step = true;
+                    this.sw.num = num;
+                    this.sw.type = type;
+                    this.sel.package = package;
+                },
+                // 聯絡表單上一步
+                connBack() {
+                    switch (this.sw.type) {
+                        case 0:
+                            this.sw.num = 1;
+                            break;
+                        case 1:
+                            this.sw.plan = true;
+                            this.sw.step = false;
+                            this.sw.num = 0;
+                            this.sel.plan = 1;
+                            break;
+                    }
+                },
+                // 聯絡表單下一步(to確認資料)
+                toCkData(){
+                    if(this.ckForm()){ this.sw.num = 3}
+                },
+                // 聯絡表單確認送出
+                toForm(){
+                    if(this.ckForm()){
+                        this.sw.plan = false;
+                        this.sw.step = false;
+                        this.sw.num = 4;
+                    }             
+                },
+                // 確認表單內容
+                ckForm(){
+                    let state = true;
+                    // 沒有輸入名稱
+                    if(this.formVal.name == ''){ 
+                        this.error.nameSw = true;
+                        state = false;
+                    }
+
+                    let self = this;
+                    if(this.formVal.account == ''){
+                        this.error.accTxt = "栏位不得为空";
+                        this.error.accSw = true;
+                        state = false;
+                    }   
+                    else if(this.formVal.sel == 0){
+                        let ck_qq = /^[1-9]{1}[0-9]{4,14}$/;
+                        if(!ck_qq.test(this.formVal.account)){ errorFormat(); state = false;}
+                    }
+                    else if(this.formVal.sel == 1){
+                        let ck_weChat = /^[a-zA-Z]([-_a-zA-Z0-9]{6,20})$/;
+                        if(!ck_weChat.test(this.formVal.account)){ errorFormat(); state = false;}
+                    }
+                    else if(this.formVal.sel == 2){
+                        let ck_tg = /^[@]{1}[a-zA-Z]{1}[_a-zA-Z0-9]{4,99}$/;
+                        if(!ck_tg.test(this.formVal.account)){ errorFormat(); state = false;}
+                    }
+                    function errorFormat(){
+                        self.error.accTxt = "帐号格式不正确";
+                        self.error.accSw = true;
+                        state = false;
+                    }
+                    return state;
+                },
+                postApi(){
+                    let data = {
+                            plan: this.sel.plan, 
+                            package: this.sel.package,
+                            server: this.sel.server,
+                            cdn: this.sel.cdn,
+                            name: this.formVal.name,
+                            acc_type: this.formVal.sel,
+                            account: this.formVal.account,
+                        }
+                    console.log(data)
+                },
+                goTop(){
+                    window.scrollTo(0, 0);
+                }
+            },
+            mounted() { 
+                axios.get("json/planData.json").then((r) => { this.planData = r.data;});
+                axios.get("json/serverData.json").then((r) => { this.serverData = r.data;});
+                axios.get("json/cdnData.json").then((r) => { this.cdnData = r.data;});
+            },
+        }).mount("#app");
+
+
+    </script>
+</body>
+
+</html>
