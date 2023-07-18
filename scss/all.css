@@ -327,8 +327,8 @@ body {
 }
 .stepCount .mobLine {
   width: 100%;
-  height: 4px;
-  border-radius: 4px;
+  height: 8px;
+  border-radius: 8px;
   margin-bottom: 12px;
   background-color: #eee;
   box-shadow: 1px 1px 3px #c9c9c9;
@@ -342,38 +342,41 @@ body {
   }
 }
 .stepCount .mobLine.type_0 span.width_0 {
-  width: 40%;
+  width: calc((100% - 8px) / 5 * 2);
 }
 .stepCount .mobLine.type_0 span.width_1 {
-  width: 60%;
+  width: calc((100% - 8px) / 5 * 3);
 }
 .stepCount .mobLine.type_0 span.width_2 {
-  width: 80%;
+  width: calc((100% - 8px) / 5 * 4);
 }
 .stepCount .mobLine.type_0 span.width_3 {
-  width: 100%;
+  width: calc((100% - 8px) / 5 * 5);
 }
 .stepCount .mobLine.type_0 span.width_4 {
-  width: 120%;
+  width: calc((100% - 8px) / 5 * 6);
 }
 .stepCount .mobLine.type_0 span.width_5 {
-  width: 140%;
+  width: calc((100% - 8px) / 5 * 7);
 }
 .stepCount .mobLine.type_1 span.width_2 {
-  width: 66.6666666667%;
+  width: calc((100% - 8px) / 3 * 2);
 }
 .stepCount .mobLine.type_1 span.width_3 {
-  width: 100%;
+  width: calc((100% - 8px) / 3 * 3);
 }
 .stepCount .mobLine span {
+  width: 0;
   height: 4px;
+  border-radius: 4px;
   margin: auto;
   background-color: #e63267;
   display: inline-block;
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: 4px;
+  transition: 0.5s;
 }
 
 .planList {
